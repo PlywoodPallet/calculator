@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Calculator</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+        background-color:black;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div id="calculator">
+        <div id="+">+</div>
+        <div id="-">-</div>
+        <div id="*">*</div>
+        <div id="/">/</div>
+
+    </div>
+
+    <script>
+
+    function add (x, y) {
+        return x + y;
+    }
+
+    function subtract (x,y) {
+        return x-y;
+    }
+
+    function multiply (x, y) {
+        return x * y;
+    }
+
+    function divide (x, y) {
+        return x / y;
+    }
+
+    function operate (x, operator, y) {
+        switch(operator){
+            case '+': 
+                return add(x,y);
+            case '-':
+                return subtract(x, y);
+            case '*':
+                return multiply(x,y);
+            case '/':
+                return divide(x,y);
+            default:
+                console.log("Invalid operator");
+
+        }
+
+    }
+
+
+    </script>
+  </body>
+</html>
