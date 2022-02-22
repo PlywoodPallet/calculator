@@ -6,7 +6,28 @@
     <style>
         body {
         background-color:black;
+        color: white;
         }
+
+        #calculator {
+            display: flex;
+            padding: 50px;
+        }
+
+        #calc-numbers {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+        }
+
+        #calc-operators {
+            display: grid;
+            grid-template-columns: 100px;
+            gap: 10px;
+            padding-left: 10px;
+        }
+
+    
 
     </style>
   </head>
@@ -14,12 +35,40 @@
   <body>
 
     <div id="calculator">
-        <div id="+">+</div>
-        <div id="-">-</div>
-        <div id="*">*</div>
-        <div id="/">/</div>
+        <div id="calc-numbers">
+            <button id="7">7</button>
+            <button id="8">8</button>
+            <button id="9">9</button>
 
-    </div>
+            <button id="4">4</button>
+            <button id="5">5</button>
+            <button id="6">6</button>
+
+            <button id="1">1</button>
+            <button id="2">2</button>
+            <button id="3">3</button>
+
+            <button id=".">.</button>
+            <button id="0">0</button>
+            <button id="=">=</button>
+        </div>
+
+
+        <div id="calc-operators">
+            <button id="clear">clear</button>
+            <button id="+">+</button>
+            <button id="-">-</button>
+            <button id="*">*</button>
+            <button id="/">/</button>
+        </div>
+        
+
+
+        
+
+
+        
+    </button>
 
     <script>
 
@@ -35,7 +84,7 @@
         return x * y;
     }
 
-    function divide (x, y) {
+    function/buttonide (x, y) {
         return x / y;
     }
 
@@ -48,7 +97,7 @@
             case '*':
                 return multiply(x,y);
             case '/':
-                return divide(x,y);
+                return/buttonide(x,y);
             default:
                 console.log("Invalid operator");
 
