@@ -105,11 +105,11 @@
 
     <script>
 
-    let currentOperator;
-    let firstOperand;
-    let secondOperand;
+    let operators = [];
+    let operands = [];
 
-    let isFirstOperation = true;
+    let currentOperator;
+
     let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
 
     function add (x, y) {
@@ -203,8 +203,9 @@
     function enterDigit (digit) {
         const int_digit = new Number(digit);
 
-        // if the second operand is being inputted, clear the display
+        // if the second operand needs to be inputted, clear the display in preparation
         if (waitingForSecondOperand) {
+            operator.push(currentOperator);
             updateDisplay(0);
             waitingForSecondOperand = false;
         }
@@ -219,21 +220,16 @@
     function enterOperator (operator) {
         currentOperator = operator;
         firstOperand = getDisplayValue();
+        operands.push(firstOperand);
+
         waitingForSecondOperand = true;
-
-/*         if (isFirstOperation) {
-            isFirstOperation = false;
-            //console.log("isFirstOperation changed to false");
-        }
-        else if(!isFirstOperation) {
-
-        } */
 
         //console.log(`currentOperator: ${currentOperator} firstOperand: ${firstOperand} waitingForSecondOperand: ${waitingForSecondOperand}`);
     }
 
     function equalsOperator () {
         secondOperand = getDisplayValue();
+        operands.push(secondOperand);
 
         if(currentOperator == "/" && secondOperand == 0) {
             alert("Divide by zero is not allowed");
@@ -241,7 +237,7 @@
         else {
             let newDisplayValue = operate (firstOperand, currentOperator, secondOperand);
 
-            console.log(`firstOperand: ${firstOperand} currentOperator: ${currentOperator} secondOperand: ${secondOperand}`);
+            // console.log(`firstOperand: ${firstOperand} currentOperator: ${currentOperator} secondOperand: ${secondOperand}`);
 
             updateDisplay(newDisplayValue);
         }
