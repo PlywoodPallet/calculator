@@ -5,19 +5,40 @@
     <meta charset="UTF-8">
     <style>
         body {
-        background-color:black;
-        color: white;
+            background-color:black;
+            color: white;
         }
 
         #calculator {
-            display: flex;
+            width: 500px;
+            /*  doing a lot of work here, need to make this width the width of the bottom half of the calculator*/
+
+
             padding: 50px;
         }
 
-        #calc-numbers {
+        #calc-display {
+            background-color: white;
+            color: black;
+            font-size: 3em;
+            font-family:sans-serif;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        #below-display {
+            display: flex;
+        }
+
+        #calc-numpad {
             display: grid;
             grid-template-columns: repeat(3, 100px);
             gap: 10px;
+        }
+
+        #calc-numpad button{
+            font-size: 3em;
+            font-family:sans-serif;
         }
 
         #calc-operators {
@@ -27,6 +48,11 @@
             padding-left: 10px;
         }
 
+        #calc-operators button{
+            font-size: 3em;
+        }
+
+
     
 
     </style>
@@ -35,33 +61,40 @@
   <body>
 
     <div id="calculator">
-        <div id="calc-numbers">
-            <button id="7">7</button>
-            <button id="8">8</button>
-            <button id="9">9</button>
+        <div id="calc-display"></div>
 
-            <button id="4">4</button>
-            <button id="5">5</button>
-            <button id="6">6</button>
+        <div id="below-display">
 
-            <button id="1">1</button>
-            <button id="2">2</button>
-            <button id="3">3</button>
+            <div id="calc-numpad">
+                <button id="7">7</button>
+                <button id="8">8</button>
+                <button id="9">9</button>
 
-            <button id=".">.</button>
-            <button id="0">0</button>
-            <button id="=">=</button>
-        </div>
+                <button id="4">4</button>
+                <button id="5">5</button>
+                <button id="6">6</button>
 
+                <button id="1">1</button>
+                <button id="2">2</button>
+                <button id="3">3</button>
 
-        <div id="calc-operators">
-            <button id="clear">clear</button>
-            <button id="+">+</button>
-            <button id="-">-</button>
-            <button id="*">*</button>
-            <button id="/">/</button>
-        </div>
+                <button id=".">.</button>
+                <button id="0">0</button>
+                <button id="=">=</button>
+                
+            </div>
         
+
+            <div id="calc-operators">
+                <button id="AC">AC</button>
+                <button id="+">+</button>
+                <button id="-">-</button>
+                <button id="*">*</button>
+                <button id="/">/</button>
+            </div>
+        
+        </div>
+    </div>
 
 
         
@@ -72,39 +105,159 @@
 
     <script>
 
+    let currentOperator;
+    let firstOperand;
+    let secondOperand;
+
+    let isFirstOperation = true;
+    let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
+
     function add (x, y) {
         return x + y;
     }
 
     function subtract (x,y) {
-        return x-y;
+        return x - y;
     }
 
     function multiply (x, y) {
         return x * y;
     }
 
-    function/buttonide (x, y) {
+    function divide (x, y) {
         return x / y;
     }
 
     function operate (x, operator, y) {
+        
+        // convert to number if input is a string
+        const int_x = new Number(x);
+        const int_y = new Number(y);
+        // no need to convert operator, it will always be a string
+        
         switch(operator){
             case '+': 
-                return add(x,y);
+                return add(int_x,int_y);
             case '-':
-                return subtract(x, y);
+                return subtract(int_x, int_y);
             case '*':
-                return multiply(x,y);
+                return multiply(int_x,int_y);
             case '/':
-                return/buttonide(x,y);
+                return divide(int_x,int_y);
             default:
-                console.log("Invalid operator");
-
+                console.log("Invalid operator: " + operator);
         }
 
     }
 
+    function updateDisplay (displayValue) {
+        const calculatorDisplay = document.querySelector("#calc-display");
+        calculatorDisplay.textContent = displayValue;
+    }
+
+    function getDisplayValue () {
+        const calculatorDisplay = document.querySelector("#calc-display");
+        return calculatorDisplay.textContent;
+    }
+
+    updateDisplay(0); // initalize display
+    initalizeCalculatorButtons();
+
+    // create event listeners on each button
+    function initalizeCalculatorButtons() {
+        const numpadButtons = document.querySelectorAll("#calc-numpad button");
+        //console.log(numpadButtons);
+        
+        for (let button of numpadButtons) {
+            
+            if (button.id == "=") {
+                button.addEventListener("click", ()=> {
+                    equalsOperator();
+                })
+            } else {
+                button.addEventListener("click", ()=> {
+                    enterDigit(button.id);
+                })
+            }
+        }
+
+        const operatorButtons = document.querySelectorAll("#calc-operators button");
+        //console.log(operatorButtons);
+        
+        for (let button of operatorButtons) {
+            if (button.id == "AC") {
+                button.addEventListener("click", ()=> {
+                allClear();
+                })
+            } else {
+                button.addEventListener("click", ()=> {
+                enterOperator(button.id);
+                })
+
+            }
+        }
+    }
+
+
+
+    function enterDigit (digit) {
+        const int_digit = new Number(digit);
+
+        // if the second operand is being inputted, clear the display
+        if (waitingForSecondOperand) {
+            updateDisplay(0);
+            waitingForSecondOperand = false;
+        }
+
+        let oldDisplayValue = new Number(getDisplayValue());
+        let newDisplayValue = new Number((oldDisplayValue * 10) + int_digit);
+
+        updateDisplay(newDisplayValue);
+        // console.log(`(old value: ${oldDisplayValue} * 10) + ${int_digit} = new value: ${newDisplayValue}`);
+    }
+
+    function enterOperator (operator) {
+        currentOperator = operator;
+        firstOperand = getDisplayValue();
+        waitingForSecondOperand = true;
+
+/*         if (isFirstOperation) {
+            isFirstOperation = false;
+            //console.log("isFirstOperation changed to false");
+        }
+        else if(!isFirstOperation) {
+
+        } */
+
+        //console.log(`currentOperator: ${currentOperator} firstOperand: ${firstOperand} waitingForSecondOperand: ${waitingForSecondOperand}`);
+    }
+
+    function equalsOperator () {
+        secondOperand = getDisplayValue();
+
+        if(currentOperator == "/" && secondOperand == 0) {
+            alert("Divide by zero is not allowed");
+        }
+        else {
+            let newDisplayValue = operate (firstOperand, currentOperator, secondOperand);
+
+            console.log(`firstOperand: ${firstOperand} currentOperator: ${currentOperator} secondOperand: ${secondOperand}`);
+
+            updateDisplay(newDisplayValue);
+        }
+
+        
+    }
+
+    function allClear() {
+        updateDisplay(0);
+        currentOperator = undefined;
+        firstOperand = undefined;
+
+        isFirstOperation = true;
+        waitingForSecondOperand = false;
+
+    }    
 
     </script>
   </body>
