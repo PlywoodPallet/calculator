@@ -105,12 +105,32 @@
 
     <script>
 
-    let operators = [];
+    
     let operands = [];
+    let operators = [];
 
+    let firstOperand;
+    let secondOperand;
     let currentOperator;
 
+    let waitingForOperand = true;
     let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
+    let isFirstEqualsOperation = true;
+
+    function allClear() {
+        updateDisplay(0);
+        
+        operands = [];
+        operators = [];
+
+        firstOperand = undefined;
+        secondOperand = undefined;
+        currentOperator = undefined;
+
+        waitingForOperand = true;
+        waitingForSecondOperand = false;
+        isFirstEqualsOperation = true;
+    }    
 
     function add (x, y) {
         return x + y;
@@ -135,6 +155,9 @@
         const int_y = new Number(y);
         // no need to convert operator, it will always be a string
         
+        console.log(`${x} ${operator} ${y}`);
+
+
         switch(operator){
             case '+': 
                 return add(int_x,int_y);
@@ -193,67 +216,109 @@
                 button.addEventListener("click", ()=> {
                 enterOperator(button.id);
                 })
-
             }
         }
     }
 
 
-
+    // if waitingForOperand is true, push() digit into the operands array then switch waitingForOperand to false
+    // is waitingForOperand is false, a new digit entered triggers the removal of the last entry, then updated with the new value
     function enterDigit (digit) {
-        const int_digit = new Number(digit);
+        
+        // entering a digit resets isFirstEqualsOperation to true
+        setFirstEqualsOperation(true);
 
+        if(waitingForOperand) {
+            updateDisplay(0);
+        }
+
+        
         // if the second operand needs to be inputted, clear the display in preparation
+        // if second operand is being inputted, that means the final operator has been chosen
         if (waitingForSecondOperand) {
-            operator.push(currentOperator);
+            operators.push(currentOperator);
             updateDisplay(0);
             waitingForSecondOperand = false;
         }
 
         let oldDisplayValue = new Number(getDisplayValue());
+        const int_digit = new Number(digit);
         let newDisplayValue = new Number((oldDisplayValue * 10) + int_digit);
 
         updateDisplay(newDisplayValue);
+
+        if (waitingForOperand) {
+            operands.push(newDisplayValue);
+            setWaitingforOperand(false);
+        } else {
+            operands.pop();
+            operands.push(newDisplayValue);
+        }
+
+        console.log(operands);
+        console.log(operators);
+
         // console.log(`(old value: ${oldDisplayValue} * 10) + ${int_digit} = new value: ${newDisplayValue}`);
     }
 
-    function enterOperator (operator) {
-        currentOperator = operator;
-        firstOperand = getDisplayValue();
-        operands.push(firstOperand);
+    // for some reason I can only edit this global variable via function and not with a simple waitingForOperand = false in a function???? The variable is global and should be able to be accessed everywhere
+    // need to look up this. Scope of waitingForOperand should be global but its not. 
+    function setWaitingforOperand(boolean) {
+        waitingForOperand = boolean;
+        console.log("waitingForOperand: " + waitingForOperand);
+    }
 
+    // currentOperator is stored in operators in the enterDigit() function because the calculator needs to wait until the user selects the final operator (calc allows picking multiple operators, but only the last chosen operator is used)
+    function enterOperator (operator) {
+
+        // an existing operator indicates that there is a previous operation that needs to be completed before a the current one is done
+        if(operators.length > 0) {
+            equalsOperator();
+        }
+
+        currentOperator = operator;
+
+        setWaitingforOperand(true);
         waitingForSecondOperand = true;
 
-        //console.log(`currentOperator: ${currentOperator} firstOperand: ${firstOperand} waitingForSecondOperand: ${waitingForSecondOperand}`);
+        //console.log(`currentOperator:${currentOperator} waitingForSecondOperand:${waitingForSecondOperand}`);
     }
 
     function equalsOperator () {
-        secondOperand = getDisplayValue();
-        operands.push(secondOperand);
+
+        // normally first operand comes first in the array, then the second operand
+        if(isFirstEqualsOperation) {
+            firstOperand = operands[operands.length-2]; 
+            secondOperand = operands[operands.length-1];
+            currentOperator = operators.pop();
+            setFirstEqualsOperation(false);
+        } 
+        else { // if the equals button gets pressed multiple times, save the second operand and current operator (by not updating them)
+            firstOperand = operands[operands.length-1]; 
+        }
+
+        console.log(`${firstOperand} ${currentOperator} ${secondOperand}`);
 
         if(currentOperator == "/" && secondOperand == 0) {
-            alert("Divide by zero is not allowed");
+            alert("Error: Divide by zero. Calculator reset");
+            allClear();
         }
         else {
             let newDisplayValue = operate (firstOperand, currentOperator, secondOperand);
 
-            // console.log(`firstOperand: ${firstOperand} currentOperator: ${currentOperator} secondOperand: ${secondOperand}`);
-
             updateDisplay(newDisplayValue);
+            operands.push(newDisplayValue);
+            setWaitingforOperand(true); // calculation complete, set calculator to wait for new operand
         }
-
-        
+        console.log(operands);
+        console.log(operators);
     }
 
-    function allClear() {
-        updateDisplay(0);
-        currentOperator = undefined;
-        firstOperand = undefined;
+    function setFirstEqualsOperation(boolean) {
+        isFirstEqualsOperation = boolean;
+    }
 
-        isFirstOperation = true;
-        waitingForSecondOperand = false;
 
-    }    
 
     </script>
   </body>
