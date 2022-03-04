@@ -117,7 +117,7 @@
     let waitingForOperand = true;
     let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
     let isFirstEqualsOperation = true;
-    let pendingOperation = false; // true when there is an operation that hasn't be calculated yet (such as entering 3 + 1 + 2)
+    let waitingOperation = false; // if 
 
     initalizeCalculatorButtons();
 
@@ -134,7 +134,8 @@
         waitingForOperand = true;
         waitingForSecondOperand = false;
         isFirstEqualsOperation = true;
-        operatorEnteredWaitingForOperation = false;
+
+        console.log(`${operands} ${operators} ${firstOperand} ${secondOperand} ${currentOperator} WFO:${waitingForOperand} WFSO:${waitingForSecondOperand} FEO:${isFirstEqualsOperation}`);
     }    
 
     function add (x, y) {
@@ -190,6 +191,7 @@
     // create event listeners on each button
     function initalizeCalculatorButtons() {
         const numpadButtons = document.querySelectorAll("#calc-numpad button");
+        //console.log(numpadButtons);
         
         for (let button of numpadButtons) {
             
@@ -205,6 +207,7 @@
         }
 
         const operatorButtons = document.querySelectorAll("#calc-operators button");
+        //console.log(operatorButtons);
         
         for (let button of operatorButtons) {
             if (button.id == "AC") {
@@ -234,7 +237,7 @@
         // if the second operand needs to be inputted, clear the display in preparation
         // if second operand is being inputted, that means the final operator has been chosen
         if (waitingForSecondOperand) {
-            pendingOperation = true;
+            operators.push(currentOperator);
             console.log(operators);
             updateDisplay();
             waitingForSecondOperand = false;
@@ -253,19 +256,25 @@
             operands.pop();
             operands.push(newDisplayValue);
         }
+
+        // console.log(operands);
+        //console.log(operators);
+
+        // console.log(`(old value: ${oldDisplayValue} * 10) + ${int_digit} = new value: ${newDisplayValue}`);
     }
 
     // for some reason I can only edit this global variable via function and not with a simple waitingForOperand = false in a function???? The variable is global and should be able to be accessed everywhere
     // need to look up this. Scope of waitingForOperand should be global but its not. 
     function setWaitingforOperand(boolean) {
         waitingForOperand = boolean;
+        //console.log("waitingForOperand: " + waitingForOperand);
     }
 
     // currentOperator is stored in operators in the enterDigit() function because the calculator needs to wait until the user selects the final operator (calc allows picking multiple operators, but only the last chosen operator is used)
     function enterOperator (operator) {
 
         // an existing operator in the array indicates that there is a previous operation that needs to be completed before the current one is done
-        if(pendingOperation) {
+        if(operators.length > 0) {
             equalsOperator();
         }
 
@@ -273,6 +282,8 @@
 
         setWaitingforOperand(true);
         waitingForSecondOperand = true;
+
+        //console.log(`currentOperator:${currentOperator} waitingForSecondOperand:${waitingForSecondOperand}`);
     }
 
     function enterDecimal() {
@@ -285,11 +296,15 @@
         if(isFirstEqualsOperation) {
             firstOperand = operands[operands.length-2]; 
             secondOperand = operands[operands.length-1];
+            currentOperator = operators.pop();
+            console.log(operators);
             setFirstEqualsOperation(false);
         } 
         else { // if the equals button gets pressed multiple times, save the second operand and current operator (by not updating them) and only update the first operand as the last pushed value (the result of the last operation)
             firstOperand = operands[operands.length-1]; 
         }
+
+        // console.log(`${firstOperand} ${currentOperator} ${secondOperand}`);
 
         // divide by zero resets the calculator and exits
         if(currentOperator == "/" && secondOperand == 0) {
@@ -306,17 +321,14 @@
 
             updateDisplay(newDisplayValue);
             operands.push(newDisplayValue);
-            setWaitingforOperand(true); // calculation complete, set calculator to wait for operand
-            setpendingOperation(false); // no longer waiting to perform an operation
+            setWaitingforOperand(true); // calculation complete, set calculator to wait for new operand
         }
+        // console.log(operands);
+        // console.log(operators);
     }
 
     function setFirstEqualsOperation(boolean) {
         isFirstEqualsOperation = boolean;
-    }
-
-    function setpendingOperation(boolean) {
-        pendingOperation = boolean;
     }
 
 
