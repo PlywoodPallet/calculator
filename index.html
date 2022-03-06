@@ -108,7 +108,6 @@
 
     
     let operands = [];
-    let operators = [];
 
     let firstOperand;
     let secondOperand;
@@ -125,7 +124,6 @@
         updateDisplay(); // clear display
         
         operands = [];
-        operators = [];
 
         firstOperand = undefined;
         secondOperand = undefined;
@@ -235,7 +233,6 @@
         // if second operand is being inputted, that means the final operator has been chosen
         if (waitingForSecondOperand) {
             pendingOperation = true;
-            console.log(operators);
             updateDisplay();
             waitingForSecondOperand = false;
         }
