@@ -125,6 +125,7 @@
         
         operands = [];
 
+        // can I refactor code to remove these global variables?
         firstOperand = undefined;
         secondOperand = undefined;
         currentOperator = undefined;
@@ -195,7 +196,9 @@
                 button.addEventListener("click", ()=> {
                     equalsOperator();
                 })
-            } else {
+            }
+            
+            else {
                 button.addEventListener("click", ()=> {
                     enterDigit(button.id);
                 })
@@ -209,7 +212,10 @@
                 button.addEventListener("click", ()=> {
                 allClear();
                 })
-            } else {
+            } 
+            
+            
+            else {
                 button.addEventListener("click", ()=> {
                 enterOperator(button.id);
                 })
@@ -232,8 +238,8 @@
         // if the second operand needs to be inputted, clear the display in preparation
         // if second operand is being inputted, that means the final operator has been chosen
         if (waitingForSecondOperand) {
-            pendingOperation = true;
             updateDisplay();
+            pendingOperation = true;
             waitingForSecondOperand = false;
         }
 
@@ -270,10 +276,6 @@
 
         setWaitingforOperand(true);
         waitingForSecondOperand = true;
-    }
-
-    function enterDecimal() {
-
     }
 
     function equalsOperator () {
