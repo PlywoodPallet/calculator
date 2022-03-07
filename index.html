@@ -197,6 +197,12 @@
                     equalsOperator();
                 })
             }
+
+            else if (button.id == ".") {
+                button.addEventListener("click", ()=> {
+                    enterDecimal();
+                })
+            }
             
             else {
                 button.addEventListener("click", ()=> {
@@ -276,6 +282,25 @@
 
         setWaitingforOperand(true);
         waitingForSecondOperand = true;
+    }
+
+    function enterDecimal() {
+        let oldDisplayValue = new String(getDisplayValue());
+
+        // if a decmial already exists, exit the function
+        if (oldDisplayValue.includes(".")) {
+            return;
+        }
+
+
+
+        let newDisplayValue = oldDisplayValue.concat(".");
+
+        updateDisplay(newDisplayValue);
+
+        
+
+
     }
 
     function equalsOperator () {
