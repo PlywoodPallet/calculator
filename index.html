@@ -249,9 +249,9 @@
             waitingForSecondOperand = false;
         }
 
-        let oldDisplayValue = new Number(getDisplayValue());
-        const int_digit = new Number(digit);
-        let newDisplayValue = new Number((oldDisplayValue * 10) + int_digit);
+        let oldDisplayValue = new String(getDisplayValue()); // input may already be string but convert to string just in case
+        const str_digit = new String(digit); // input may already be string but convert to string just in case
+        let newDisplayValue = oldDisplayValue + str_digit; // js: + operator between two strings concatenates instead of adding
 
         updateDisplay(newDisplayValue);
 
