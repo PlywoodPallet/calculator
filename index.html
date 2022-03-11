@@ -106,6 +106,25 @@
 
     <script>
 
+        /* input cases to test for
+        1 + 1 = (simple operation) PASS
+        2 * 2 = - 1 (perform two operations concurrently with entering "=") PASS
+        4 / 2 + 1 (need to perform two operations concurrently without entering "=") PASS
+        1 + 2 + 3 + 4 + 5 + 6 + 7 + 9 + 10 = 55 (multiple concurrent operations) PASS
+        4 / 2 =, 1 + 1 = (perform two operations separately) PASS
+
+        1 - 100 = -99 (result is a negative number) PASS
+        -99 + 99 = 0 (operand is a negative number) FAIL
+        5 * -99 = (entering - after entering operator makes a negative number, not change the operator to -)
+        5 + -99 = 
+
+        need decimal math to be accurate - FAIL
+        2.2 + 1.1 (entering decimals without a zero after decimal point) PASS
+        0.01 - 0.05 (entering decimals with a zero after decimal point) PASS
+        entering .2 displays 0.2
+        entering .2 + .1 produces a correct result
+
+        */
     
     let operands = [];
 
@@ -113,9 +132,9 @@
     let secondOperand;
     let currentOperator;
 
-    let waitingForOperand = true;
+    let waitingForOperand = true; 
     let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
-    let isFirstEqualsOperation = true;
+    let isFirstEqualsOperation = true; // if equals gets pressed multiple times, keep adding the second operand
     let pendingOperation = false; // true when there is an operation that hasn't be calculated yet (such as entering 3 + 1 + 2)
 
     initalizeCalculatorButtons();
@@ -229,14 +248,13 @@
         }
     }
 
-
-    // if waitingForOperand is true, push() digit into the operands array then switch waitingForOperand to false
-    // is waitingForOperand is false, a new digit entered triggers the removal of the last entry, then updated with the new value
     function enterDigit (digit) {
         
         // entering a digit resets isFirstEqualsOperation to true
         setFirstEqualsOperation(true);
 
+        // TODO: this part of code is giving strange results, needs further investigation
+        // this allows the entering of a second operation that is unconnected from the first (do 1+1=2, then do 2+2=4)
         if(waitingForOperand) {
             updateDisplay();
         }
@@ -255,6 +273,8 @@
 
         updateDisplay(newDisplayValue);
 
+        // if waitingForOperand is true, push() digit into the operands array then switch waitingForOperand to false
+        // is waitingForOperand is false, a new digit entered triggers the removal of the last entry, then updated with the new value
         if (waitingForOperand) {
             operands.push(newDisplayValue);
             setWaitingforOperand(false);
@@ -268,6 +288,7 @@
     // need to look up this. Scope of waitingForOperand should be global but its not. 
     function setWaitingforOperand(boolean) {
         waitingForOperand = boolean;
+        console.log("waitingForOperand: " + waitingForOperand);
     }
 
     // currentOperator is stored in operators in the enterDigit() function because the calculator needs to wait until the user selects the final operator (calc allows picking multiple operators, but only the last chosen operator is used)
@@ -285,22 +306,33 @@
     }
 
     function enterDecimal() {
+        
+        // TODO: .2 + .1 can be successfully converted and entered but pressing "=" button doesn't do anything. Something needs to be added in enterDigit()
+        // if waiting for operand, clear the display (allows math like .2 (converted to 0.2) + .1)
+        if(waitingForSecondOperand) {
+            updateDisplay();
+            waitingForSecondOperand = false;
+        }
+        
+        
         let oldDisplayValue = new String(getDisplayValue());
 
-        // if a decmial already exists, exit the function
+        // if a decmial already exists, exit the function silently
         if (oldDisplayValue.includes(".")) {
             return;
         }
 
+        let newDisplayValue;
 
-
-        let newDisplayValue = oldDisplayValue.concat(".");
+        if (oldDisplayValue == "") {
+            newDisplayValue = "0.";
+        }
+        else {
+            let newDisplayValue = oldDisplayValue.concat(".");
+        }
 
         updateDisplay(newDisplayValue);
-
-        
-
-
+        setWaitingforOperand(false);
     }
 
     function equalsOperator () {
@@ -331,7 +363,7 @@
             updateDisplay(newDisplayValue);
             operands.push(newDisplayValue);
             setWaitingforOperand(true); // calculation complete, set calculator to wait for operand
-            setpendingOperation(false); // no longer waiting to perform an operation
+            setPendingOperation(false); // no longer waiting to perform an operation
         }
     }
 
@@ -339,7 +371,7 @@
         isFirstEqualsOperation = boolean;
     }
 
-    function setpendingOperation(boolean) {
+    function setPendingOperation(boolean) {
         pendingOperation = boolean;
     }
 
