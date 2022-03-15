@@ -109,7 +109,6 @@
 
         /*
             Future plans
-            - pos/negative button
             - remove the need for the operands array (a few global variables instead)
             - use big.js for precise math
             - calculator history like chromebook calc
@@ -140,8 +139,8 @@
 
         Negative number math - beyond scope of this project
         1 - 100 = -99 (result is a negative number) PASS 
-        -99 + 99 = 0 (first operand is a negative number) FAIL
-        5 * -99 = (second operand is a negative number. entering - after entering operator makes a negative number, not change the operator to -) FAIL
+        -99 + 99 = 0 (first operand is a negative number) PASS
+        5 * -99 = (second operand is a negative number. entering - after entering operator makes a negative number, not change the operator to -) PASS - only if +/- button is pressed after entering second operand
 
         */
     
@@ -162,7 +161,7 @@
     function allClear() {
         updateDisplay(); // clear display
         
-        operands = [];
+        operands = []; // stored as strings, not float
 
         firstOperand = undefined;
         secondOperand = undefined;
@@ -260,7 +259,6 @@
             else if (button.id == "+/-") {
                 
                 button.addEventListener("click", ()=> {
-                alert("posNeg");
                 positiveNegativeToggle();
                 })
                 
@@ -273,8 +271,25 @@
         }
     }
 
+    // toggles number between positive and negative
     function positiveNegativeToggle() {
+        let currentNumber = new Number(getDisplayValue());
 
+        // if the display is empty, silently exit without disturbing display
+        // if the operand is zero, silently exit
+        if (currentNumber == 0) {
+            return;
+        }
+
+        // prevent +/- from changing the first operand while its still being displayed after entering an operator (2 * +/- will silently exit). Makes it so that the operation can only be performed by pressing 2 * 3 +/-
+        if(waitingForSecondOperand) {
+            return;
+        }
+
+        let newNumber = currentNumber * -1;
+
+        updateDisplay(newNumber);
+        updateOperandsArray(newNumber);
     }
 
     function enterDigit (digit) {
