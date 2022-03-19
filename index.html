@@ -110,11 +110,16 @@
         /*
             Future plans
             - remove the need for the operands array (a few global variables instead)
+            - keyboard support
+            - backspace button (call it something easily understood like "delete" not "clear")
+
             - use big.js for precise math
             - calculator history like chromebook calc
             - cool animations like chromebok calc
 
-            - color coordinated layout
+            - nice looking color coordinated design with CSS
+            - display a consistent number of digits (for example 1/3). Need to understand when js abbreviates numbers with long decimals (1e20). Change the display box in response to this
+
             - mobile responsive layout? (Need to do more odin for this)
 
         */
@@ -145,11 +150,19 @@
         */
     
     // should I refactor code to remove these global variables?
-    let operands = [];
+    let operands = []; // stored as strings, not float
 
     let firstOperand;
     let secondOperand;
     let currentOperator;
+
+    let curr_firstOperand;
+    let curr_secondOperand;
+    let curr_operator;
+
+    let prev_firstOperand;
+    let prev_secondOperad;
+    let prev_operator;
 
     let waitingForOperand = true; 
     let waitingForSecondOperand = false; // for clearing the display after first operand and operator are entered
@@ -161,7 +174,7 @@
     function allClear() {
         updateDisplay(); // clear display
         
-        operands = []; // stored as strings, not float
+        operands = []; 
 
         firstOperand = undefined;
         secondOperand = undefined;
