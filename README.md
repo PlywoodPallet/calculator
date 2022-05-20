@@ -6,11 +6,17 @@ Live code: https://plywoodpallet.github.io/calculator/
 Test cases
 Basic Math
 1 + 1 = (simple operation) PASS
+
 2 * 2 = - 1 (perform two operations concurrently with entering "=") PASS
+
 4 / 2 + 1 (need to perform two operations concurrently without entering "=") PASS
+
 1 + 2 + 3 + 4 + 5 + 6 + 7 + 9 + 10 = 55 (multiple concurrent operations) PASS
+
 4 / 2 =, 1 + 1 = (perform two operations separately) PASS
+
 10 - 1 = = = = = = (repeated pressing of = performs to operation over and over) PASS
+
 
 Decimal Math
 need decimal math to be accurate - FAIL (beyond scope of this project)
