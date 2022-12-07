@@ -7,7 +7,7 @@ Live code: https://plywoodpallet.github.io/calculator/
 - This was my first medium-sized project for the Odin Project
 - I wrote this project before learning about design patterns. Implementing the usability features / advanced logic heavily complicated my code
 - Writing the advanced logic made me appreciate how simple-looking apps like a calculator can have a lot going on underneath
-- Decimal math is not precise in js by default, learning how to implement this was beyond the scope of the project
+- Decimal math is not precise in js by default, learning how to fix this was beyond the scope of the project
 - Creating a negative/positive button helped with negative number calculations
 
 ## Usability Features / Advanced logic
