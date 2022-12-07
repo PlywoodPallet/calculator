@@ -1,17 +1,16 @@
 # Calculator
-Built a calculator using vanilla Javascript. Has some advanced logic beyond [project requirements](https://www.theodinproject.com/lessons/foundations-calculator)
+Built a calculator using vanilla Javascript. Has usability features beyond [project requirements](https://www.theodinproject.com/lessons/foundations-calculator)
 
 Live code: https://plywoodpallet.github.io/calculator/
 
 ## Post-Project Notes
 - This was my first medium-sized project for the Odin Project
-- I wrote this project before learning about design patterns. Implementing the advanced logic heavily complicated my code
+- I wrote this project before learning about design patterns. Implementing the usability features / advanced logic heavily complicated my code
 - Writing the advanced logic made me appreciate how simple-looking apps like a calculator can have a lot going on underneath
-- I was motivated to write some advance logic to make it more usable
- - Decimal math is not precise in js by default, learning how to implement this was beyond the scope of the project
- - Creating a negative/positive button helped with negative number calculations
+- Decimal math is not precise in js by default, learning how to implement this was beyond the scope of the project
+- Creating a negative/positive button helped with negative number calculations
 
-## Advanced logic
+## Usability Features / Advanced logic
 - Perform two linked operations concurrently 
     - using equals: 2 * 2 = - 1 returns 3
     - without using equals: 4 / 2 + 1 returns 3 
